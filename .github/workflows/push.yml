@@ -1,0 +1,23 @@
+name: Push docker image
+on:
+  workflow_dispatch:
+    inputs:
+      buildEnv:
+        description: 'Build Environment (dev or prod)'
+        required: true
+        default: 'dev'
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Push image to docker hub
+        env:
+          DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
+          DOCKER_HUB_PWD: ${{ secrets.DOCKER_HUB_PWD }}
+        run: |
+          IMAGE_TAG=${{ steps.dockerbuild.outputs.image-tag }}
+          echo "[INFO]: upload image to DockerHub"
+          docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PWD || { echo "Error en docker login"; exit 1; }
+          docker push beracahmx/web:$IMAGE_TAG || { echo "Error en docker push"; exit 1; }
+
