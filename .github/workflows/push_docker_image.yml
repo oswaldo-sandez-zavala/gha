@@ -8,7 +8,7 @@ on:
         default: 'dev'
 jobs:
   build-image:
-    runs-on: beracahmx/odoo:dev-testbuild
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Push image to docker hub
